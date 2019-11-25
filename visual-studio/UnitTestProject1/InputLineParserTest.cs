@@ -86,15 +86,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) => { },
-                        (newAppModel) => { },
-                        (commentLine) => { },
-                        (args) => { },
-                        (args) => { }
-                        );
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 
@@ -222,15 +214,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) => { },
-                        (newAppModel) => { },
-                        (commentLine) => { },
-                        (args) => { },
-                        (args) => { }
-                        );
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 
@@ -272,15 +256,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) => { },
-                        (newAppModel) => { },
-                        (commentLine) => { },
-                        (args) => { },
-                        (args) => { }
-                        );
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 

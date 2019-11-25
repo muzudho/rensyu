@@ -28,27 +28,7 @@ set top2.value = 2
 
             foreach (var line in text.Split(Environment.NewLine))
             {
-                InputLineModelController.ParseByLine(
-                    appModel,
-                    line,
-                    (infoText) =>
-                    {
-                    },
-                    (newAppModel) =>
-                    {
-                    },
-                    (commentLine) =>
-                    {
-                        Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                    },
-                    (args) =>
-                    {
-                        // Puts.
-                    },
-                    (args) =>
-                    {
-                        // Sets.
-                    });
+                InputLineModelController.ParseLine(appModel, line);
             }
 
             var plyAliasName = new AliasName("ply");
@@ -86,34 +66,14 @@ set top2.value = 2
 
             appModel.MatchObjectRealName(
                 top2RealName.Value,
-                (RealName realName)=>
+                (RealName realName) =>
                 {
                     // 指定した文字列が、そのまま出てくる☆（＾～＾）
                     Assert.AreEqual("top2", realName.Value);
                 });
 
             var line = "alias top2 = ply";
-            InputLineModelController.ParseByLine(
-                appModel,
-                line,
-                (infoText) =>
-                {
-                },
-                (newAppModel) =>
-                {
-                },
-                (commentLine) =>
-                {
-                    Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                },
-                (args) =>
-                {
-                    // Puts.
-                },
-                (args) =>
-                {
-                    // Sets.
-                });
+            InputLineModelController.ParseLine(appModel, line);
 
             var plyAliasName = new AliasName("ply");
             appModel.MatchObjectRealName(
@@ -156,7 +116,7 @@ set top2.value = 2
                     Assert.AreEqual("手目", value.Title);
                     Assert.AreEqual("0", value.ValueAsText());
                 },
-                ()=>
+                () =>
                 {
                 });
         }
@@ -184,7 +144,7 @@ set top2.value = 2
                     Assert.AreEqual("#info", value.Title);
                     Assert.AreEqual("Hello, world!", value.ValueAsText());
                 },
-                ()=>
+                () =>
                 {
                 });
         }

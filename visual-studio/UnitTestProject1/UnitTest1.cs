@@ -64,27 +64,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) =>
-                        {
-                        },
-                        (newAppModel) =>
-                        {
-                        },
-                        (commentLine) =>
-                        {
-                            Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                        },
-                        (args) =>
-                        {
-                            // Puts.
-                        },
-                        (args) =>
-                        {
-                            // Sets.
-                        });
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 
@@ -333,27 +313,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) =>
-                        {
-                        },
-                        (newAppModel) =>
-                        {
-                        },
-                        (commentLine) =>
-                        {
-                            Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                        },
-                        (args) =>
-                        {
-                            // Puts.
-                        },
-                        (args) =>
-                        {
-                            // Sets.
-                        });
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 
@@ -485,27 +445,7 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) =>
-                        {
-                        },
-                        (newAppModel) =>
-                        {
-                        },
-                        (commentLine) =>
-                        {
-                            Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                        },
-                        (args) =>
-                        {
-                            // Puts.
-                        },
-                        (args) =>
-                        {
-                            // Sets.
-                        });
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 
@@ -745,27 +685,7 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputLineModelController.ParseByLine(
-                        appModel,
-                        line,
-                        (infoText) =>
-                        {
-                        },
-                        (newAppModel) =>
-                        {
-                        },
-                        (commentLine) =>
-                        {
-                            Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                        },
-                        (args) =>
-                        {
-                            // Puts.
-                        },
-                        (args) =>
-                        {
-                            // Sets.
-                        });
+                    InputLineModelController.ParseLine(appModel, line);
                 }
             }
 

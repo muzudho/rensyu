@@ -9,8 +9,19 @@
     /// <summary>
     /// メイン・ウィンドウがでかくなるから　こっちへ切り離すぜ☆（＾～＾）
     /// </summary>
-    public static class InputLineModelController
+    public class InputLineModelController
     {
+        /// <summary>
+        /// </summary>
+        private InputLineModelController(ApplicationObjectModelWrapper appModel, string line)
+        {
+            this.AppModel = appModel;
+            this.Line = line;
+        }
+
+        private ApplicationObjectModelWrapper AppModel { get; set; }
+        private string Line { get; set; }
+
         public delegate void ReadsCallback(string text);
 
         public static void Read(ApplicationObjectModelWrapper appModel, MainWindow appView, ReadsCallback callback)
@@ -48,25 +59,34 @@
         }
 
         public delegate void CommentViewCallback(string commentLine);
-        public delegate void InfoViewCallback(string text);
-        public delegate void JsonViewCallback(ApplicationObjectModelWrapper appModel);
-        public delegate void PutsViewCallback(PutsInstructionArgument args);
-        public delegate void SetsViewCallback(SetsInstructionArgument args);
+        public delegate void AliasViewCallback(Instruction aliasInstruction);
+        public delegate void InfoViewCallback(string infoLine);
+        public delegate void JsonViewCallback(ApplicationObjectModelWrapper jsonAppModel);
+        public delegate void PutsViewCallback(PutsInstructionArgument putsArgs);
+        public delegate void SetsViewCallback(SetsInstructionArgument setsArgs);
 
-        public static void ParseByLine(
-            ApplicationObjectModelWrapper appModel,
-            string line,
-            CommentViewCallback commentViewCallback,
-            InfoViewCallback infoViewCallback,
-            JsonViewCallback jsonViewCallback,
-            PutsViewCallback putsViewCallback,
-            SetsViewCallback setsViewCallback
-        )
+        public delegate void NoneCallback();
+
+        private Instruction AliasInstruction { get; set; }
+        private string CommentLine { get; set; }
+        private string InfoLine { get; set; }
+        private ApplicationObjectModelWrapper JsonAppModel { get; set; }
+        private PutsInstructionArgument PutsArg { get; set; }
+        private SetsInstructionArgument SetsArg { get; set; }
+
+        public static InputLineModelController ParseLine(ApplicationObjectModelWrapper appModel, string line)
         {
-            if (null == appModel)
+            if (appModel == null)
             {
                 throw new ArgumentNullException(nameof(appModel));
             }
+
+            if (line == null)
+            {
+                throw new ArgumentNullException(nameof(line));
+            }
+
+            var instance = new InputLineModelController(appModel, line);
 
             InputLineParser.ParseByLine(
                 line,
@@ -74,17 +94,18 @@
                 (aliasInstruction) =>
                 {
                     var args = (AliasInstructionArgument)aliasInstruction.Argument;
-                    Trace.WriteLine($"Info            | Alias1 RealName=[{args.RealName.Value}] args=[{args.ToDisplay()}]");
+                    // Trace.WriteLine($"Info            | Alias1 RealName=[{args.RealName.Value}] args=[{args.ToDisplay()}]");
 
                     foreach (var alias in args.AliasList)
                     {
-                        Trace.WriteLine($"Info            | Alias2 [{alias.Value}] = [{args.RealName.Value}]");
+                        // Trace.WriteLine($"Info            | Alias2 [{alias.Value}] = [{args.RealName.Value}]");
                         if (!appModel.TryAddObjectRealName(alias, args.RealName))
                         {
-                            Trace.WriteLine($"Info            | Alias2b [{alias.Value}] is already exists.");
+                            Trace.WriteLine($"Warning         | Alias2b [{alias.Value}] is already exists.");
                         }
                     }
-                    Trace.WriteLine($"Info            | Alias3 {aliasInstruction.Command} RealName={args.RealName.Value} args=[{args.ToDisplay()}]");
+                    // Trace.WriteLine($"Info            | Alias3 {aliasInstruction.Command} RealName={args.RealName.Value} args=[{args.ToDisplay()}]");
+                    instance.AliasInstruction = aliasInstruction;
                 },
                 (boardInstruction) =>
                 {
@@ -124,7 +145,7 @@
                 },
                 (commentLine) =>
                 {
-                    commentViewCallback(commentLine);
+                    instance.CommentLine = commentLine;
                 },
                 (exitsInstruction) =>
                 {
@@ -139,14 +160,14 @@
                     var args = (InfoInstructionArgument)infoInstruction.Argument;
 
                     // 改行コードに対応☆（＾～＾）ただし 垂直タブ（めったに使わんだろ） は除去☆（＾～＾）
-                    infoViewCallback(MainWindow.SoluteNewline(args.Text));
+                    instance.InfoLine = MainWindow.SoluteNewline(args.Text);
                 },
                 (jsonInstruction) =>
                 {
                     var args = (JsonInstructionArgument)jsonInstruction.Argument;
                     Trace.WriteLine($"Json            | {jsonInstruction.Command} args.Json.Length={args.Json.Length}");
 
-                    jsonViewCallback(new ApplicationObjectModelWrapper(ApplicationObjectModel.Parse(args.Json)));
+                    instance.JsonAppModel = new ApplicationObjectModelWrapper(ApplicationObjectModel.Parse(args.Json));
                 },
                 (putsInstruction) =>
                 {
@@ -155,56 +176,56 @@
 
                     // エイリアスが設定されていれば変換するぜ☆（＾～＾）
                     appModel.MatchObjectRealName(
-                        args.Name,
-                        (RealName realName) =>
+                    args.Name,
+                    (RealName realName) =>
+                    {
+                        if (realName.Value == InputLineParser.BlackObject)
                         {
-                            if (realName.Value == InputLineParser.BlackObject)
+                            var args = (PutsInstructionArgument)putsInstruction.Argument;
+                            // インデックスの並びは、内部的には Z字方向式 だぜ☆（＾～＾）
+                            foreach (var cellRange in args.Destination.CellRanges)
                             {
-                                var args = (PutsInstructionArgument)putsInstruction.Argument;
-                                        // インデックスの並びは、内部的には Z字方向式 だぜ☆（＾～＾）
-                                        foreach (var cellRange in args.Destination.CellRanges)
+                                foreach (var zShapedIndex in cellRange.ToIndexes(appModel))
                                 {
-                                    foreach (var zShapedIndex in cellRange.ToIndexes(appModel))
-                                    {
-                                                // 黒石にするぜ☆（＾～＾）
-                                                StoneModelController.ChangeModelToBlack(appModel, zShapedIndex);
-                                    }
+                                    // 黒石にするぜ☆（＾～＾）
+                                    StoneModelController.ChangeModelToBlack(appModel, zShapedIndex);
                                 }
                             }
-                            else if (realName.Value == InputLineParser.WhiteObject)
+                        }
+                        else if (realName.Value == InputLineParser.WhiteObject)
+                        {
+                            var args = (PutsInstructionArgument)putsInstruction.Argument;
+                            // インデックスの並びは、内部的には Z字方向式 だぜ☆（＾～＾）
+                            foreach (var cellRange in args.Destination.CellRanges)
                             {
-                                var args = (PutsInstructionArgument)putsInstruction.Argument;
-                                        // インデックスの並びは、内部的には Z字方向式 だぜ☆（＾～＾）
-                                        foreach (var cellRange in args.Destination.CellRanges)
+                                foreach (var zShapedIndex in cellRange.ToIndexes(appModel))
                                 {
-                                    foreach (var zShapedIndex in cellRange.ToIndexes(appModel))
-                                    {
-                                                // 白石にするぜ☆（＾～＾）
-                                                StoneModelController.ChangeModelToWhite(appModel, zShapedIndex);
-                                    }
+                                    // 白石にするぜ☆（＾～＾）
+                                    StoneModelController.ChangeModelToWhite(appModel, zShapedIndex);
                                 }
                             }
-                            else if (realName.Value == InputLineParser.SpaceObject)
+                        }
+                        else if (realName.Value == InputLineParser.SpaceObject)
+                        {
+                            var args = (PutsInstructionArgument)putsInstruction.Argument;
+                            // インデックスの並びは、内部的には Z字方向式 だぜ☆（＾～＾）
+                            foreach (var cellRange in args.Destination.CellRanges)
                             {
-                                var args = (PutsInstructionArgument)putsInstruction.Argument;
-                                        // インデックスの並びは、内部的には Z字方向式 だぜ☆（＾～＾）
-                                        foreach (var cellRange in args.Destination.CellRanges)
+                                foreach (var zShapedIndex in cellRange.ToIndexes(appModel))
                                 {
-                                    foreach (var zShapedIndex in cellRange.ToIndexes(appModel))
-                                    {
-                                                // 石を取り除くぜ☆（＾～＾）
-                                                StoneModelController.ChangeModelToSpace(appModel, zShapedIndex);
-                                    }
+                                    // 石を取り除くぜ☆（＾～＾）
+                                    StoneModelController.ChangeModelToSpace(appModel, zShapedIndex);
                                 }
                             }
-                            else
-                            {
-                                Trace.WriteLine($"Warning         | {putsInstruction.Command} RealName=[{realName.Value}] args=[{args.ToDisplay(appModel)}] are not implemented.");
-                            }
-                        });
+                        }
+                        else
+                        {
+                            Trace.WriteLine($"Warning         | {putsInstruction.Command} RealName=[{realName.Value}] args=[{args.ToDisplay(appModel)}] are not implemented.");
+                        }
+                    });
 
                     // ビューの更新は、呼び出し元でしろだぜ☆（＾～＾）
-                    putsViewCallback(args);
+                    instance.PutsArg = args;
                 },
                 (setsInstruction) =>
                 {
@@ -216,28 +237,174 @@
                         args.Name,
                         (RealName realName) =>
                         {
-                                    // これが参照渡しになっているつもりだが……☆（＾～＾）
-                                    appModel.MatchPropertyOption(
-                                realName,
-                                (propModel) =>
-                                {
-                                            // .typeプロパティなら、propModelはヌルで構わない。
-                                            PropertyModelController.ChangeModel(appModel, realName, propModel, args);
-                                },
-                                () =>
-                                {
-                                            // モデルが無くても働くプロパティはある☆（＾～＾）
-                                            PropertyModelController.ChangeModel(appModel, realName, null, args);
-                                });
+                            // これが参照渡しになっているつもりだが……☆（＾～＾）
+                            appModel.MatchPropertyOption(
+                        realName,
+                        (propModel) =>
+                        {
+                                        // .typeプロパティなら、propModelはヌルで構わない。
+                                        PropertyModelController.ChangeModel(appModel, realName, propModel, args);
+                        },
+                        () =>
+                        {
+                                        // モデルが無くても働くプロパティはある☆（＾～＾）
+                                        PropertyModelController.ChangeModel(appModel, realName, null, args);
                         });
+                    });
 
                     // ビューの更新は、呼び出し元でしろだぜ☆（＾～＾）
-                    setsViewCallback(args);
+                    instance.SetsArg = args;
                 },
-                ()=>
+                () =>
                 {
                     // 何もしないぜ☆（＾～＾）
                 });
+
+            return instance;
+        }
+
+        public InputLineModelController ThenAlias(AliasViewCallback aliasViewCallback, NoneCallback noneCallback)
+        {
+            if (aliasViewCallback == null)
+            {
+                throw new ArgumentNullException(nameof(aliasViewCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            if (this.AliasInstruction == null)
+            {
+                noneCallback();
+            }
+            else
+            {
+                aliasViewCallback(this.AliasInstruction);
+            }
+
+            return this;
+        }
+
+        public InputLineModelController ThenComment(CommentViewCallback commentViewCallback, NoneCallback noneCallback)
+        {
+            if (commentViewCallback == null)
+            {
+                throw new ArgumentNullException(nameof(commentViewCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            if (this.CommentLine == null)
+            {
+                noneCallback();
+            }
+            else
+            {
+                commentViewCallback(this.CommentLine);
+            }
+
+            return this;
+        }
+
+        public InputLineModelController ThenInfo(InfoViewCallback infoViewCallback, NoneCallback noneCallback)
+        {
+            if (infoViewCallback == null)
+            {
+                throw new ArgumentNullException(nameof(infoViewCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            if (this.InfoLine == null)
+            {
+                noneCallback();
+            }
+            else
+            {
+                infoViewCallback(this.InfoLine);
+            }
+
+            return this;
+        }
+
+        public InputLineModelController ThenJson(JsonViewCallback jsonViewCallback, NoneCallback noneCallback)
+        {
+            if (jsonViewCallback == null)
+            {
+                throw new ArgumentNullException(nameof(jsonViewCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            if (this.JsonAppModel == null)
+            {
+                noneCallback();
+            }
+            else
+            {
+                jsonViewCallback(this.JsonAppModel);
+            }
+
+            return this;
+        }
+
+        public InputLineModelController ThenPut(PutsViewCallback putsViewCallback, NoneCallback noneCallback)
+        {
+            if (putsViewCallback == null)
+            {
+                throw new ArgumentNullException(nameof(putsViewCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            if (this.PutsArg == null)
+            {
+                noneCallback();
+            }
+            else
+            {
+                putsViewCallback(this.PutsArg);
+            }
+
+            return this;
+        }
+
+        public InputLineModelController ThenSet(SetsViewCallback setsViewCallback, NoneCallback noneCallback)
+        {
+            if (setsViewCallback == null)
+            {
+                throw new ArgumentNullException(nameof(setsViewCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            if (this.SetsArg == null)
+            {
+                noneCallback();
+            }
+            else
+            {
+                setsViewCallback(this.SetsArg);
+            }
+
+            return this;
         }
     }
 }

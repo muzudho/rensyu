@@ -214,101 +214,125 @@
                     // input.txt読取。
                     InputLineModelController.Read(this.Model, this, (text) =>
                     {
-                        // 1行ずつ解析☆（＾～＾）
-                        InputLineModelController.ParseByLine(
-                            this.Model,
-                            text,
-                            (commentLine) =>
-                            {
-                                Trace.WriteLine($"Info            | Comment=[{commentLine}].");
-                            },
-                            (infoText) =>
-                            {
+                    // 1行ずつ解析☆（＾～＾）
+                    InputLineModelController.ParseLine(this.Model, text).ThenAlias(
+                        (aliasInstruction) =>
+                        {
+                        },
+                        () =>
+                        {
+
+                        }).ThenComment(
+                        (commentLine) =>
+                        {
+                            Trace.WriteLine($"Info            | Comment=[{commentLine}].");
+                        },
+                        () =>
+                        {
+
+                        }).ThenInfo(
+                        (infoText) =>
+                        {
                                 // infoなら☆（＾～＾）
                                 this.infoValue.Content = infoText;
-                            },
-                            (newAppModel) =>
-                            {
+                        },
+                        () =>
+                        {
+
+                        }).ThenJson(
+                        (jsonAppModel) =>
+                        {
                                 // モデルの差し替えなら☆（＾～＾）
-                                this.SetModel(newAppModel);
-                            },
-                            (args) =>
-                            {
+                                this.SetModel(jsonAppModel);
+                        },
+                        () =>
+                        {
+
+                        }).ThenPut(
+                        (putsArgs) =>
+                        {
                                 // put コマンド☆（＾～＾）
                             },
-                            (args) =>
-                            {
+                        () =>
+                        {
+
+                        }).ThenSet(
+                        (setsArgs) =>
+                        {
                                 // setコマンドのあとのビュー設定なら☆（＾～＾）
-                                var aliasName = new AliasName(args.Name);
+                                var aliasName = new AliasName(setsArgs.Name);
 
                                 // エイリアスが設定されていれば変換するぜ☆（＾～＾）
                                 this.Model.MatchObjectRealName(
-                                    args.Name,
-                                    (RealName realName) =>
-                                    {
+                                setsArgs.Name,
+                                (RealName realName) =>
+                                {
                                         // 行サイズ☆（＾～＾）
                                         if (realName.Value == ApplicationObjectModel.RowSizeRealName.Value)
+                                    {
+                                        if (int.TryParse(setsArgs.Value, out int outValue))
                                         {
-                                            if (int.TryParse(args.Value, out int outValue))
-                                            {
                                                 // 一応サイズに制限を付けておくぜ☆（＾～＾）
                                                 if (0 < outValue && outValue <= HyperParameter.MaxRowSize)
-                                                {
-                                                    this.Model.Board.RowSize = outValue;
-                                                    Trace.WriteLine($"Info            | Row size. value=[{outValue}]");
-                                                }
-                                                else
-                                                {
-                                                    Trace.WriteLine($"Warning         | Row size out of range. value=[{outValue}]");
-                                                }
+                                            {
+                                                this.Model.Board.RowSize = outValue;
+                                                Trace.WriteLine($"Info            | Row size. value=[{outValue}]");
                                             }
                                             else
                                             {
-                                                Trace.WriteLine($"Warning         | Row size parse fail. value=[{args.Value}]");
+                                                Trace.WriteLine($"Warning         | Row size out of range. value=[{outValue}]");
                                             }
                                         }
+                                        else
+                                        {
+                                            Trace.WriteLine($"Warning         | Row size parse fail. value=[{setsArgs.Value}]");
+                                        }
+                                    }
                                         // 列サイズ☆（＾～＾）
                                         else if (realName.Value == ApplicationObjectModel.ColumnSizeRealName.Value)
+                                    {
+                                        if (int.TryParse(setsArgs.Value, out int outValue))
                                         {
-                                            if (int.TryParse(args.Value, out int outValue))
-                                            {
                                                 // 一応サイズに制限を付けておくぜ☆（＾～＾）
                                                 if (0 < outValue && outValue <= HyperParameter.MaxColumnSize)
-                                                {
-                                                    this.Model.Board.ColumnSize = outValue;
-                                                    Trace.WriteLine($"Info            | Column size {outValue}.");
-                                                }
-                                                else
-                                                {
-                                                    Trace.WriteLine($"Warning         | Column size out of range. value=[{outValue}]");
-                                                }
+                                            {
+                                                this.Model.Board.ColumnSize = outValue;
+                                                Trace.WriteLine($"Info            | Column size {outValue}.");
                                             }
                                             else
                                             {
-                                                Trace.WriteLine($"Warning         | Column size parse fail. value=[{args.Value}]");
+                                                Trace.WriteLine($"Warning         | Column size out of range. value=[{outValue}]");
                                             }
                                         }
+                                        else
+                                        {
+                                            Trace.WriteLine($"Warning         | Column size parse fail. value=[{setsArgs.Value}]");
+                                        }
+                                    }
                                         // 列番号☆（＾～＾）
                                         else if (realName.Value == ApplicationObjectModel.ColumnNumbersRealName.Value)
-                                        {
-                                            Trace.WriteLine($"Info            | Column numbers.");
-                                            ColumnNumbersModelController.ChangeModel(this.Model, args);
-                                        }
+                                    {
+                                        Trace.WriteLine($"Info            | Column numbers.");
+                                        ColumnNumbersModelController.ChangeModel(this.Model, setsArgs);
+                                    }
                                         // 行番号☆（＾～＾）
                                         else if (realName.Value == ApplicationObjectModel.RowNumbersRealName.Value)
-                                        {
-                                            Trace.WriteLine($"Info            | Row numbers.");
-                                            RowNumbersModelController.ChangeModel(this.Model, args);
-                                        }
+                                    {
+                                        Trace.WriteLine($"Info            | Row numbers.");
+                                        RowNumbersModelController.ChangeModel(this.Model, setsArgs);
+                                    }
                                         // 盤上の星☆（＾～＾）
                                         else if (realName.Value == ApplicationObjectModel.StarsRealName.Value)
-                                        {
-                                            Trace.WriteLine($"Info            | Stars.");
-                                            StarsModelController.ChangeModel(this.Model, args);
-                                        }
-                                    });
-                            }
-                        );
+                                    {
+                                        Trace.WriteLine($"Info            | Stars.");
+                                        StarsModelController.ChangeModel(this.Model, setsArgs);
+                                    }
+                                });
+                        },
+                        () =>
+                        {
+
+                        });
 
                         // すべてのコマンドの実行が終わったらまとめて再描画だぜ☆（＾～＾）
                         ApplicationViewController.RepaintAllViews(this.Model, this);
