@@ -35,37 +35,39 @@
 
             CellAddress cellAddress = null;
 
-            var next = ColumnAddressParser.Parse(text, start, appModel, (columnAddress, curr) =>
-            {
-                if (columnAddress == null)
+            var next = ColumnAddressParser.Parse(
+                text,
+                start,
+                appModel,
+                (columnAddress, curr) =>
+                {
+                    // 列はマッチ☆（＾～＾）
+                    return RowAddressParser.Parse(
+                        text,
+                        curr,
+                        appModel,
+                        (rowAddress, curr) =>
+                        {
+                            if (rowAddress == null)
+                            {
+                                // 片方でもマッチしなければ、非マッチ☆（＾～＾）
+                                return start;
+                            }
+
+                            // 列と行の両方マッチ☆（＾～＾）
+                            cellAddress = new CellAddress(rowAddress, columnAddress);
+                            return curr;
+                        },
+                        ()=>
+                        {
+                            return curr;
+                        });
+                },
+                ()=>
                 {
                     // 片方でもマッチしなければ、非マッチ☆（＾～＾）
                     return start;
-                }
-
-                // 列はマッチ☆（＾～＾）
-
-                return RowAddressParser.Parse(
-                    text,
-                    curr,
-                    appModel,
-                    (rowAddress, curr) =>
-                    {
-                        if (rowAddress == null)
-                        {
-                            // 片方でもマッチしなければ、非マッチ☆（＾～＾）
-                            return start;
-                        }
-
-                        // 列と行の両方マッチ☆（＾～＾）
-                        cellAddress = new CellAddress(rowAddress, columnAddress);
-                        return curr;
-                    },
-                    ()=>
-                    {
-                        return curr;
-                    });
-            });
+                });
 
             if (cellAddress!=null)
             {

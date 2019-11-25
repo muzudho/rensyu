@@ -450,41 +450,56 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
             }
 
             var start = 0;
-            Assert.AreEqual(1, ColumnAddressParser.Parse("A", start, appModel, (matched, curr) =>
-            {
-                Assert.AreEqual("A", matched?.ToDisplay(appModel));
-                if (matched == null)
+            ColumnAddressParser.Parse(
+                "A",
+                start,
+                appModel,
+                (matched, curr) =>
                 {
+                    Assert.AreEqual("A", matched.ToDisplay(appModel));
+                    Assert.AreEqual(1, curr);
+                    return curr;
+                },
+                () =>
+                {
+                    Assert.Fail();
                     return start;
-                }
-
-                return curr;
-            }));
+                });
 
             start = 3;
-            Assert.AreEqual(4, ColumnAddressParser.Parse("ABCDEFGHIJKLMNOPQRST", start, appModel, (matched, curr) =>
-            {
-                Assert.AreEqual("D", matched?.ToDisplay(appModel));
-                if (matched == null)
+            ColumnAddressParser.Parse(
+                "ABCDEFGHIJKLMNOPQRST",
+                start,
+                appModel,
+                (matched, curr) =>
                 {
+                    Assert.AreEqual("D", matched.ToDisplay(appModel));
+                    Assert.AreEqual(4, curr);
+                    return curr;
+                },
+                () =>
+                {
+                    Assert.Fail();
                     return start;
-                }
-
-                return curr;
-            }));
+                });
 
             // I is a null.
             start = 0;
-            Assert.AreEqual(start, ColumnAddressParser.Parse("I", start, appModel, (matched, curr) =>
-            {
-                Assert.IsNull(matched);
-                if (matched == null)
+            ColumnAddressParser.Parse(
+                "I",
+                start,
+                appModel,
+                (matched, curr) =>
                 {
+                    Assert.IsNull(matched);
+                    Assert.AreEqual(start, curr);
+                    return curr;
+                },
+                () =>
+                {
+                    Assert.Fail();
                     return start;
-                }
-
-                return curr;
-            }));
+                });
         }
 
         /// <summary>

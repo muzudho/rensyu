@@ -1,7 +1,6 @@
 ﻿namespace KifuwarabeUec11Gui.Controller
 {
     using System;
-    using System.Diagnostics;
     using KifuwarabeUec11Gui.InputScript;
     using KifuwarabeUec11Gui.Model;
 
