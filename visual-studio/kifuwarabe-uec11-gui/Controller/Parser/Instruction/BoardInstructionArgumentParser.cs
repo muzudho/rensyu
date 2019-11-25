@@ -24,7 +24,7 @@
         public static int Parse(
             string text,
             int start,
-            ApplicationObjectModelWrapper model,
+            ApplicationObjectModelWrapper appModel,
             SomeCallback someCallback,
             NoneCallback noneCallback
             )
@@ -63,7 +63,7 @@
             curr = RowAddressParser.Parse(
                 text,
                 curr,
-                model,
+                appModel,
                 (rowAddress, curr) =>
                 {
                     // 途中のスペースは読み飛ばすぜ☆（＾～＾）

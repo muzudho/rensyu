@@ -1,32 +1,30 @@
-﻿namespace KifuwarabeUec11Gui.InputScript
+﻿namespace KifuwarabeUec11Gui.Controller.Parser
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using KifuwarabeUec11Gui.Controller.Parser;
+    using KifuwarabeUec11Gui.InputScript;
     using KifuwarabeUec11Gui.Model;
 
     /// <summary>
-    /// GUIへの入力スクリプトだぜ☆（＾～＾）
+    /// 入力スクリプトのパーサーだぜ☆（＾～＾）
+    /// 
+    /// 行番号など、変更可能な部分も予め知ってないとパースはできないぜ☆（＾～＾）
     /// </summary>
-    public class InputScriptDocument
+    public class InputLineParser
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="matched"></param>
-        /// <param name="curr">Current.</param>
-        public delegate void SomeCallback(InputScriptDocument matched);
         public delegate void NoneCallback();
         public delegate void CommentCallback(string commentLine);
+        public delegate void CommandCallback(Instruction instruction);
 
-        public static string AliasCommand => "alias";
+        private static string AliasCommand => "alias";
+        private static string BoardCommand => "board";
+        private static string ExitsCommand => "exit";
+        private static string JsonCommand => "json";
+        private static string PutsCommand => "put";
+        private static string SetsCommand => "set";
+
         public static string BlackObject => "black";
-        public static string BoardCommand => "board";
-        public static string ExitsCommand => "exit";
-        public static string JsonCommand => "json";
-        public static string PutsCommand => "put";
-        public static string SetsCommand => "set";
         public static string SpaceObject => "space";
         public static string WhiteObject => "white";
 
@@ -37,7 +35,7 @@
 
         public List<Instruction> Instructions { get; private set; }
 
-        public InputScriptDocument(List<Instruction> instructions)
+        public InputLineParser(List<Instruction> instructions)
         {
             this.Instructions = instructions;
         }
@@ -46,7 +44,13 @@
             string line,
             ApplicationObjectModelWrapper appModel,
             CommentCallback commentCallback,
-            SomeCallback someCallback,
+            CommandCallback aliasCommandCallback,
+            CommandCallback boardCommandCallback,
+            CommandCallback exitsCommandCallback,
+            CommandCallback infoCommandCallback,
+            CommandCallback jsonCommandCallback,
+            CommandCallback putsCommandCallback,
+            CommandCallback setsCommandCallback,
             NoneCallback noneCallback)
         {
             if (commentCallback == null)
@@ -54,9 +58,39 @@
                 throw new ArgumentNullException(nameof(commentCallback));
             }
 
-            if (someCallback == null)
+            if (aliasCommandCallback == null)
             {
-                throw new ArgumentNullException(nameof(someCallback));
+                throw new ArgumentNullException(nameof(aliasCommandCallback));
+            }
+
+            if (boardCommandCallback == null)
+            {
+                throw new ArgumentNullException(nameof(boardCommandCallback));
+            }
+
+            if (exitsCommandCallback == null)
+            {
+                throw new ArgumentNullException(nameof(exitsCommandCallback));
+            }
+
+            if (infoCommandCallback == null)
+            {
+                throw new ArgumentNullException(nameof(infoCommandCallback));
+            }
+
+            if (jsonCommandCallback == null)
+            {
+                throw new ArgumentNullException(nameof(jsonCommandCallback));
+            }
+
+            if (putsCommandCallback == null)
+            {
+                throw new ArgumentNullException(nameof(putsCommandCallback));
+            }
+
+            if (setsCommandCallback == null)
+            {
+                throw new ArgumentNullException(nameof(setsCommandCallback));
             }
 
             if (noneCallback == null)
@@ -112,31 +146,24 @@
                         {
                             // Trace.WriteLine($"Info            | Command-ISD=[{commandName?.Text}]");
 
-                            if (commandName.Text == InputScriptDocument.AliasCommand)
+                            if (commandName.Text == InputLineParser.AliasCommand)
                             {
                                 curr = AliasInstructionArgumentParser.Parse(
                                     line,
                                     curr,
                                     (argument, curr) =>
                                     {
-                                        if (argument == null)
-                                        {
-                                            Trace.WriteLine($"Error           | {line}");
-                                        }
-                                        else
-                                        {
-                                                // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay()}");
-                                                instructions.Add(new Instruction(commandName.Text, argument));
-                                        }
-
+                                        // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay()}");
+                                        aliasCommandCallback(new Instruction(commandName.Text, argument));
                                         return curr;
                                     },
                                     () =>
                                     {
+                                        Trace.WriteLine($"Error           | {line}");
                                         return curr;
                                     });
                             }
-                            else if (commandName.Text == InputScriptDocument.BoardCommand)
+                            else if (commandName.Text == InputLineParser.BoardCommand)
                             {
                                 curr = BoardInstructionArgumentParser.Parse(
                                     line,
@@ -150,23 +177,23 @@
                                         }
                                         else
                                         {
-                                                // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay(appModel)}");
-                                                instructions.Add(new Instruction(commandName.Text, argument));
+                                            // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay(appModel)}");
+                                            boardCommandCallback(new Instruction(commandName.Text, argument));
                                         }
 
                                         return curr;
                                     },
                                     () =>
                                     {
-                                            // パース失敗☆（＾～＾）
-                                            return curr;
+                                        // パース失敗☆（＾～＾）
+                                        return curr;
                                     });
                             }
-                            else if (commandName.Text == InputScriptDocument.ExitsCommand)
+                            else if (commandName.Text == InputLineParser.ExitsCommand)
                             {
-                                instructions.Add(new Instruction(commandName.Text, null));
+                                exitsCommandCallback(new Instruction(commandName.Text, null));
                             }
-                            else if (commandName.Text == InputScriptDocument.InfoCommand)
+                            else if (commandName.Text == InputLineParser.InfoCommand)
                             {
                                 InfoInstructionArgument argument;
                                 (argument, curr) = InfoInstructionArgumentParser.Parse(line, curr);
@@ -177,10 +204,10 @@
                                 else
                                 {
                                     Trace.WriteLine($"Info            | Arg {commandName.Text} {argument.ToDisplay()}");
-                                    instructions.Add(new Instruction(commandName.Text, argument));
+                                    infoCommandCallback(new Instruction(commandName.Text, argument));
                                 }
                             }
-                            else if (commandName.Text == InputScriptDocument.JsonCommand)
+                            else if (commandName.Text == InputLineParser.JsonCommand)
                             {
                                 JsonInstructionArgument argument;
                                 (argument, curr) = JsonInstructionArgumentParser.Parse(line, curr);
@@ -191,10 +218,10 @@
                                 else
                                 {
                                     // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay()}");
-                                    instructions.Add(new Instruction(commandName.Text, argument));
+                                    jsonCommandCallback(new Instruction(commandName.Text, argument));
                                 }
                             }
-                            else if (commandName.Text == InputScriptDocument.PutsCommand)
+                            else if (commandName.Text == InputLineParser.PutsCommand)
                             {
                                 curr = PutsInstructionArgumentParser.Parse(
                                     line,
@@ -208,8 +235,8 @@
                                         }
                                         else
                                         {
-                                                // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay(appModel)}");
-                                                instructions.Add(new Instruction(commandName.Text, argument));
+                                            // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay(appModel)}");
+                                            putsCommandCallback(new Instruction(commandName.Text, argument));
                                         }
 
                                         return curr;
@@ -219,7 +246,7 @@
                                         return curr;
                                     });
                             }
-                            else if (commandName.Text == InputScriptDocument.SetsCommand)
+                            else if (commandName.Text == InputLineParser.SetsCommand)
                             {
                                 curr = SetsInstructionArgumentParser.Parse(
                                     line,
@@ -232,8 +259,8 @@
                                         }
                                         else
                                         {
-                                                // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay()}");
-                                                instructions.Add(new Instruction(commandName.Text, argument));
+                                            // Trace.WriteLine($"Arg             | {commandName.Text} {argument.ToDisplay()}");
+                                            setsCommandCallback(new Instruction(commandName.Text, argument));
                                         }
 
                                         return curr;
@@ -259,10 +286,6 @@
             if (instructions == null)
             {
                 noneCallback();
-            }
-            else
-            {
-                someCallback(new InputScriptDocument(instructions));
             }
         }
     }

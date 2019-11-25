@@ -44,5 +44,39 @@
                     });
             }
         }
+
+        [TestMethod]
+        public void TestAliasCommand()
+        {
+            var appModel = new ApplicationObjectModelWrapper();
+            appModel.ModelChangeLogWriter.Enable = false;
+
+            {
+                var line = @"alias top2 = ply sasite";
+
+                InputController.ParseByLine(
+                    appModel,
+                    line,
+                    (infoText) =>
+                    {
+                    },
+                    (newAppModel) =>
+                    {
+                    },
+                    (commentLine) =>
+                    {
+                        Trace.WriteLine($"Info            | Comment=[{commentLine}].");
+                        Assert.AreEqual(line, commentLine);
+                    },
+                    (args) =>
+                    {
+                        // Puts.
+                    },
+                    (args) =>
+                    {
+                        // Sets.
+                    });
+            }
+        }
     }
 }
