@@ -1,0 +1,80 @@
+﻿namespace KifuwarabeUec11Gui.Controller.Parser
+{
+    using System;
+    using KifuwarabeUec11Gui.InputScript;
+    using KifuwarabeUec11Gui.Model;
+
+    public static class CellAddressParser
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matched"></param>
+        /// <param name="curr">Current.</param>
+        /// <returns>Next.</returns>
+        public delegate int SomeCallback(CellAddress matched, int curr);
+        public delegate int NoneCallback();
+
+        public static int Parse(
+            string text,
+            int start,
+            ApplicationObjectModelWrapper appModel,
+            SomeCallback someCallback,
+            NoneCallback noneCallback
+            )
+        {
+            if (someCallback == null)
+            {
+                throw new ArgumentNullException(nameof(someCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
+            CellAddress cellAddress = null;
+
+            var next = ColumnAddressParser.Parse(text, start, appModel, (columnAddress, curr) =>
+            {
+                if (columnAddress == null)
+                {
+                    // 片方でもマッチしなければ、非マッチ☆（＾～＾）
+                    return start;
+                }
+
+                // 列はマッチ☆（＾～＾）
+
+                return RowAddressParser.Parse(
+                    text,
+                    curr,
+                    appModel,
+                    (rowAddress, curr) =>
+                    {
+                        if (rowAddress == null)
+                        {
+                            // 片方でもマッチしなければ、非マッチ☆（＾～＾）
+                            return start;
+                        }
+
+                        // 列と行の両方マッチ☆（＾～＾）
+                        cellAddress = new CellAddress(rowAddress, columnAddress);
+                        return curr;
+                    },
+                    ()=>
+                    {
+                        return curr;
+                    });
+            });
+
+            if (cellAddress!=null)
+            {
+                return someCallback(cellAddress, next);
+            }
+            else
+            {
+                return noneCallback();
+            }
+        }
+    }
+}
