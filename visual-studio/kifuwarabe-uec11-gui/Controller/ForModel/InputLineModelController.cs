@@ -9,7 +9,7 @@
     /// <summary>
     /// メイン・ウィンドウがでかくなるから　こっちへ切り離すぜ☆（＾～＾）
     /// </summary>
-    public static class InputController
+    public static class InputLineModelController
     {
         public delegate void ReadsCallback(string text);
 
@@ -47,16 +47,16 @@
             }
         }
 
+        public delegate void CommentViewCallback(string commentLine);
         public delegate void InfoViewCallback(string text);
         public delegate void JsonViewCallback(ApplicationObjectModelWrapper appModel);
         public delegate void PutsViewCallback(PutsInstructionArgument args);
         public delegate void SetsViewCallback(SetsInstructionArgument args);
-        public delegate void CommentCallback(string commentLine);
 
         public static void ParseByLine(
             ApplicationObjectModelWrapper appModel,
             string line,
-            CommentCallback commentCallback,
+            CommentViewCallback commentViewCallback,
             InfoViewCallback infoViewCallback,
             JsonViewCallback jsonViewCallback,
             PutsViewCallback putsViewCallback,
@@ -71,10 +71,6 @@
             InputLineParser.ParseByLine(
                 line,
                 appModel,
-                (commentLine) =>
-                {
-                    commentCallback(commentLine);
-                },
                 (aliasInstruction) =>
                 {
                     var args = (AliasInstructionArgument)aliasInstruction.Argument;
@@ -125,6 +121,10 @@
                                 break;
                         }
                     }
+                },
+                (commentLine) =>
+                {
+                    commentViewCallback(commentLine);
                 },
                 (exitsInstruction) =>
                 {

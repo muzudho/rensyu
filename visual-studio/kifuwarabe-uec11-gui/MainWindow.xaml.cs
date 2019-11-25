@@ -212,10 +212,10 @@
                 this.DispatchTimer.Tick += (s, e) =>
                 {
                     // input.txt読取。
-                    InputController.Read(this.Model, this, (text) =>
+                    InputLineModelController.Read(this.Model, this, (text) =>
                     {
                         // 1行ずつ解析☆（＾～＾）
-                        InputController.ParseByLine(
+                        InputLineModelController.ParseByLine(
                             this.Model,
                             text,
                             (commentLine) =>

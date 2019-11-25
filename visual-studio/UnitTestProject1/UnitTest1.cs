@@ -64,7 +64,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputController.ParseByLine(
+                    InputLineModelController.ParseByLine(
                         appModel,
                         line,
                         (infoText) =>
@@ -333,7 +333,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputController.ParseByLine(
+                    InputLineModelController.ParseByLine(
                         appModel,
                         line,
                         (infoText) =>
@@ -485,7 +485,7 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputController.ParseByLine(
+                    InputLineModelController.ParseByLine(
                         appModel,
                         line,
                         (infoText) =>
@@ -745,7 +745,7 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
 
                 foreach (var line in text.Split(Environment.NewLine))
                 {
-                    InputController.ParseByLine(
+                    InputLineModelController.ParseByLine(
                         appModel,
                         line,
                         (infoText) =>

@@ -43,9 +43,9 @@
         public static void ParseByLine(
             string line,
             ApplicationObjectModelWrapper appModel,
-            CommentCallback commentCallback,
             CommandCallback aliasCommandCallback,
             CommandCallback boardCommandCallback,
+            CommentCallback commentCallback,
             CommandCallback exitsCommandCallback,
             CommandCallback infoCommandCallback,
             CommandCallback jsonCommandCallback,

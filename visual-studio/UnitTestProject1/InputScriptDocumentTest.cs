@@ -1,9 +1,6 @@
 ﻿namespace UnitTestProject1
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Text;
     using KifuwarabeUec11Gui.Controller;
     using KifuwarabeUec11Gui.Model;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,7 +17,7 @@
             {
                 var line = @"# This is a comment line.";
 
-                InputController.ParseByLine(
+                InputLineModelController.ParseByLine(
                     appModel,
                     line,
                     (infoText) =>
@@ -54,7 +51,7 @@
             {
                 var line = @"alias top2 = ply sasite";
 
-                InputController.ParseByLine(
+                InputLineModelController.ParseByLine(
                     appModel,
                     line,
                     (infoText) =>

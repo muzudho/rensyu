@@ -28,7 +28,7 @@ set top2.value = 2
 
             foreach (var line in text.Split(Environment.NewLine))
             {
-                InputController.ParseByLine(
+                InputLineModelController.ParseByLine(
                     appModel,
                     line,
                     (infoText) =>
@@ -93,7 +93,7 @@ set top2.value = 2
                 });
 
             var line = "alias top2 = ply";
-            InputController.ParseByLine(
+            InputLineModelController.ParseByLine(
                 appModel,
                 line,
                 (infoText) =>
