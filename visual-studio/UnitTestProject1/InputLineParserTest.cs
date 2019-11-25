@@ -1,8 +1,6 @@
 ﻿namespace UnitTestProject1
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using KifuwarabeUec11Gui.Controller;
     using KifuwarabeUec11Gui.Controller.Parser;
     using KifuwarabeUec11Gui.InputScript;

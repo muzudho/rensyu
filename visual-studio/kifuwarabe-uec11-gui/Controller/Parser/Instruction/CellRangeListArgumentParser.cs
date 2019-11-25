@@ -29,7 +29,7 @@
             NoneCallback noneCallback)
         {
             var cellRanges = new List<CellRange>();
-            var nextSum = start;
+            var curr = start;
             var fail = false;
 
             // リスト☆（＾～＾）
@@ -37,9 +37,9 @@
             while (repeatsColor && !fail)
             {
                 // 最初のスペースを読み飛ばすぜ☆（＾～＾）
-                nextSum = WhiteSpaceParser.Parse(
+                curr = WhiteSpaceParser.Parse(
                     text,
-                    nextSum,
+                    curr,
                     (whiteSpace, curr) =>
                     {
                         // 最初のスペースを読み飛ばしたぜ☆（＾～＾）
@@ -72,7 +72,7 @@
                     {
                         // 最初にスペースなんか無かった☆（＾～＾）ここで成功終了☆（＾～＾）
                         repeatsColor = false;
-                        return nextSum;
+                        return curr;
                     });
             }
 
@@ -83,7 +83,7 @@
             else
             {
                 // 列と行の両方マッチ☆（＾～＾）
-                return someCallback(new CellRangeListArgument(cellRanges), nextSum);
+                return someCallback(new CellRangeListArgument(cellRanges), curr);
             }
         }
     }

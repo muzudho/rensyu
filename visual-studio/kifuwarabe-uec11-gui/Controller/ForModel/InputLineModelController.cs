@@ -239,18 +239,18 @@
                         {
                             // これが参照渡しになっているつもりだが……☆（＾～＾）
                             appModel.MatchPropertyOption(
-                        realName,
-                        (propModel) =>
-                        {
-                                        // .typeプロパティなら、propModelはヌルで構わない。
-                                        PropertyModelController.ChangeModel(appModel, realName, propModel, args);
-                        },
-                        () =>
-                        {
-                                        // モデルが無くても働くプロパティはある☆（＾～＾）
-                                        PropertyModelController.ChangeModel(appModel, realName, null, args);
+                                realName,
+                                (propModel) =>
+                                {
+                                    // .typeプロパティなら、propModelはヌルで構わない。
+                                    PropertyModelController.ChangeModel(appModel, realName, propModel, args);
+                                },
+                                () =>
+                                {
+                                    // モデルが無くても働くプロパティはある☆（＾～＾）
+                                    PropertyModelController.ChangeModel(appModel, realName, null, args);
+                                });
                         });
-                    });
 
                     // ビューの更新は、呼び出し元でしろだぜ☆（＾～＾）
                     instance.SetsArg = args;
