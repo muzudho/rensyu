@@ -18,7 +18,7 @@
         public static int Parse(
             string text,
             int start,
-            ApplicationObjectModelWrapper model,
+            ApplicationObjectModelWrapper appModel,
             SomeCallback someCallback,
             NoneCallback noneCallback
             )
@@ -39,14 +39,9 @@
             var next = CellAddressParser.Parse(
                 text,
                 curr,
-                model,
+                appModel,
                 (startsCellAddress, curr) =>
                 {
-                    if (startsCellAddress == null)
-                    {
-                        // 構文不一致☆（＾～＾）
-                        return start;
-                    }
                     // Trace.WriteLine($"startsCellAddres| {startsCellAddress.ToDisplay()}");
 
                     return StartsWithKeywordParser.Parse(
@@ -58,14 +53,9 @@
                             return CellAddressParser.Parse(
                                 text,
                                 curr,
-                                model,
+                                appModel,
                                 (endsCellAddress, curr) =>
                                 {
-                                    if (endsCellAddress == null)
-                                    {
-                                        // 構文不一致☆（＾～＾）コロンが付いていて尻切れトンボなら不一致、諦めろだぜ☆（＾～＾）
-                                        return start;
-                                    }
                                     // Trace.WriteLine($"endsCellAddress | {endsCellAddress.ToDisplay()}");
 
                                     cellRange = new CellRange(startsCellAddress, endsCellAddress);
@@ -73,13 +63,13 @@
                                 },
                                 () =>
                                 {
-                                    // パース失敗☆（＾～＾）
-                                    return curr;
+                                    // 構文不一致☆（＾～＾）コロンが付いていて尻切れトンボなら不一致、諦めろだぜ☆（＾～＾）パース失敗☆（＾～＾）
+                                    return start;
                                 });
                         },
                         ()=>
                         {
-                            // 構文不一致☆（＾～＾）
+                            // 構文不一致、パース成功☆（＾～＾）
 
                             // ここまで一致していれば、短縮形として確定するぜ☆（＾～＾）
                             // 例えば `k10` は、 `k10:k10` と一致したと判定するんだぜ☆（＾～＾）
@@ -89,8 +79,8 @@
                 },
                 () =>
                 {
-                    // パース失敗☆（＾～＾）
-                    return curr;
+                    // 構文不一致☆（＾～＾）パース失敗☆（＾～＾）
+                    return start;
                 });
 
             if (cellRange != null)

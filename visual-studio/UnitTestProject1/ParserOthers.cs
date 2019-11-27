@@ -211,6 +211,9 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 });
         }
 
+        /// <summary>
+        /// TODO JSONのテスト大変☆（＾～＾）
+        /// </summary>
         [TestMethod]
         public void TestJsonInstructionArgumentParser()
         {
@@ -220,7 +223,36 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         [TestMethod]
         public void TestPutsInstructionArgumentParser()
         {
-            Assert.Fail();
+            var appModel = new ApplicationObjectModelWrapper();
+
+            {
+                var text = @"
+# 国際囲碁では I列は無いんだぜ☆（＾～＾）
+set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J"", ""K"", ""L"", ""M"", ""N"", ""O"", ""P"", ""Q"", ""R"", ""S"", ""T""
+set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12"", ""11"", ""10"", ""  9"", ""  8"", ""  7"", ""  6"", ""  5"", ""  4"", ""  3"", ""  2"", ""  1""
+";
+
+                foreach (var line in text.Split(Environment.NewLine))
+                {
+                    InputLineModelController.ParseLine(appModel, line);
+                }
+            }
+
+            var start = "put".Length;
+            PutsInstructionArgumentParser.Parse(
+                "put black to K10",
+                start,
+                appModel,
+                (matched, curr) =>
+                {
+                    Assert.AreEqual("black to K10", matched.ToDisplay(appModel));
+                    return curr;
+                },
+                () =>
+                {
+                    Assert.Fail();
+                    return start;
+                });
         }
 
         /// <summary>
@@ -229,7 +261,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         [TestMethod]
         public void TestSetsInstructionArgument()
         {
-            var start = 3;
+            var start = "set".Length;
             SetsInstructionArgumentParser.Parse(
                 "set b-name.value = Kifuwarabe",
                 start,
@@ -721,13 +753,14 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
                 appModel.GetStringList(ApplicationObjectModel.ColumnNumbersRealName).ValueAsText());
         }
 
-        /* TODO でかくて大変☆（＾～＾）
+        /// <summary>
+        /// TODO Inputは でかくて大変☆（＾～＾）
+        /// </summary>
         [TestMethod]
         public void TestInputLineParser()
         {
             Assert.Fail();
         }
-        */
 
         /// <summary>
         /// 国際式囲碁の行番号をテスト☆（＾～＾）

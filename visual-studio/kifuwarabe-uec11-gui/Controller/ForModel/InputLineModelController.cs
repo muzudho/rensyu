@@ -69,7 +69,6 @@
 
         private Instruction AliasInstruction { get; set; }
         private string CommentLine { get; set; }
-        private string InfoLine { get; set; }
         private ApplicationObjectModelWrapper JsonAppModel { get; set; }
         private PutsInstructionArgument PutsArg { get; set; }
         private SetsInstructionArgument SetsArg { get; set; }
@@ -160,7 +159,8 @@
                     var args = (InfoInstructionArgument)infoInstruction.Argument;
 
                     // 改行コードに対応☆（＾～＾）ただし 垂直タブ（めったに使わんだろ） は除去☆（＾～＾）
-                    instance.InfoLine = MainWindow.SoluteNewline(args.Text);
+                    var text = MainWindow.SoluteNewline(args.Text);
+                    instance.AppModel.AddString(ApplicationObjectModel.InfoRealName, new PropertyString("", text));
                 },
                 (jsonInstruction) =>
                 {
@@ -385,13 +385,14 @@
                 throw new ArgumentNullException(nameof(noneCallback));
             }
 
-            if (this.InfoLine == null)
+            var infoProperty = this.AppModel.GetString(ApplicationObjectModel.InfoRealName);
+            if (infoProperty == null)
             {
                 noneCallback();
             }
             else
             {
-                infoViewCallback(this.InfoLine);
+                infoViewCallback(infoProperty.ValueAsText());
             }
 
             return this;

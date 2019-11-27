@@ -60,7 +60,7 @@
                     });
 
                 // 最初のスペースを読み飛ばしたぜ☆（＾～＾）
-                return CellRangeParser.Parse(
+                curr = CellRangeParser.Parse(
                     text,
                     curr,
                     appModel,

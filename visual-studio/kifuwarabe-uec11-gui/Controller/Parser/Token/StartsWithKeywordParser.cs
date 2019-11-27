@@ -34,7 +34,7 @@
 
             if (keyword == null || text == null || text.Length < start + keyword.Length)
             {
-                return someCallback(null, start);
+                return noneCallback();
             }
 
             if (text.Substring(start).StartsWith(keyword, StringComparison.Ordinal))
