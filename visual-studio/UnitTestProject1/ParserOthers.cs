@@ -69,7 +69,6 @@
         public void TestBoardInstructionArgumentParser()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -108,7 +107,6 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         public void TestCellRangeListArgumentParser()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -125,44 +123,12 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 
             var start = 5;
             CellRangeListArgumentParser.Parse(
-                "black A19 K1 T1",
+                "A19 K1 T1",
                 start,
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("A19 K1 T1", matched?.ToDisplay(appModel));
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-            start = 5;
-            CellRangeListArgumentParser.Parse(
-                "white B19 K2 S1",
-                start,
-                appModel,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("B19 K2 S1", matched?.ToDisplay(appModel));
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-            start = 5;
-            CellRangeListArgumentParser.Parse(
-                "space C19 K3 R1",
-                start,
-                appModel,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("C19 K3 R1", matched?.ToDisplay(appModel));
+                    Assert.AreEqual("A19 K1 T1", matched.ToDisplay(appModel));
                     return curr;
                 },
                 () =>
@@ -174,12 +140,12 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
             // 混合型☆（＾～＾）
             start = 5;
             CellRangeListArgumentParser.Parse(
-                "space A2:B1 C4:D3 E5",
+                "A2:B1 C4:D3 E5",
                 start,
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("A2:B1 C4:D3 E5", matched?.ToDisplay(appModel));
+                    Assert.AreEqual("A2:B1 C4:D3 E5", matched.ToDisplay(appModel));
                     return curr;
                 },
                 () =>
@@ -191,12 +157,12 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
             // 大文字・小文字は区別するぜ☆（＾～＾）
             start = 5;
             CellRangeListArgumentParser.Parse(
-                "black a19 k1 t1",
+                "a19 k1 t1",
                 start,
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.AreNotEqual("A19 K1 T1", matched?.ToDisplay(appModel));
+                    Assert.AreNotEqual("A19 K1 T1", matched.ToDisplay(appModel));
                     return curr;
                 },
                 () =>
@@ -413,7 +379,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
     }
 
     [TestClass]
-    public class ParserTest
+    public class ParserOthers
     {
         [TestMethod]
         public void TestCellAddressParser()
@@ -425,7 +391,6 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         public void TestCellRangeParser()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -671,7 +636,6 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         public void TestColumnAddressParser()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -703,7 +667,6 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
         public void TestRowAddressParser()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"

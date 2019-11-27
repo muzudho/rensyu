@@ -16,7 +16,6 @@
         public void TestSetRowNumbers()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var line = @"
@@ -38,7 +37,6 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         public void TestBlackA1()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -64,7 +62,6 @@ black K10
         public void TestPutsCommand()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"

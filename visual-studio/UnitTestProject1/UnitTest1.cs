@@ -53,7 +53,6 @@ namespace UnitTestProject1
         public void TestInternationalCellAddress()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -186,7 +185,6 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         public void TestInternationalColumnAddress()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"
@@ -393,7 +391,6 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
         public void TestIndexOfCell()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             // インデックスは 左上を 0 とした Z字順。
 
@@ -441,7 +438,6 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
         public void TestColumnNumbers()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"

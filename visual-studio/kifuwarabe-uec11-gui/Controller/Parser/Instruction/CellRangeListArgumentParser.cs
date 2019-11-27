@@ -1,5 +1,6 @@
 ﻿namespace KifuwarabeUec11Gui.Controller.Parser
 {
+    using System;
     using System.Collections.Generic;
     using KifuwarabeUec11Gui.InputScript;
     using KifuwarabeUec11Gui.Model;
@@ -28,13 +29,22 @@
             SomeCallback someCallback,
             NoneCallback noneCallback)
         {
+            if (someCallback==null)
+            {
+                throw new ArgumentNullException(nameof(someCallback));
+            }
+
+            if (noneCallback == null)
+            {
+                throw new ArgumentNullException(nameof(noneCallback));
+            }
+
             var cellRanges = new List<CellRange>();
             var curr = start;
-            var fail = false;
 
             // リスト☆（＾～＾）
-            bool repeatsColor = true;
-            while (repeatsColor && !fail)
+            bool isRepeats = true;
+            while (isRepeats)
             {
                 // 最初のスペースを読み飛ばすぜ☆（＾～＾）
                 curr = WhiteSpaceParser.Parse(
@@ -42,41 +52,33 @@
                     curr,
                     (whiteSpace, curr) =>
                     {
-                        // 最初のスペースを読み飛ばしたぜ☆（＾～＾）
-                        return CellRangeParser.Parse(
-                            text,
-                            curr,
-                            appModel,
-                            (cellRange, curr) =>
-                            {
-                                if (cellRange == null)
-                                {
-                                    // セル番地指定なんて無かった☆（＾～＾）ここで成功終了☆（＾～＾）
-                                    repeatsColor = false;
-                                }
-                                else
-                                {
-                                    // セル番地指定があった☆（＾～＾）マッチで成功終了☆（＾～＾）
-                                    cellRanges.Add(cellRange);
-                                }
-
-                                return curr;
-                            },
-                            ()=>
-                            {
-                                fail = true;
-                                return curr;
-                            });
+                        return curr;
                     },
                     ()=>
                     {
-                        // 最初にスペースなんか無かった☆（＾～＾）ここで成功終了☆（＾～＾）
-                        repeatsColor = false;
+                        return curr;
+                    });
+
+                // 最初のスペースを読み飛ばしたぜ☆（＾～＾）
+                return CellRangeParser.Parse(
+                    text,
+                    curr,
+                    appModel,
+                    (cellRange, curr) =>
+                    {
+                        // セル番地指定があった☆（＾～＾）続行☆（＾～＾）
+                        cellRanges.Add(cellRange);
+                        return curr;
+                    },
+                    () =>
+                    {
+                        // セル番地指定なんて無かった☆（＾～＾）ここで成功終了☆（＾～＾）
+                        isRepeats = false;
                         return curr;
                     });
             }
 
-            if (fail)
+            if (cellRanges.Count<1)
             {
                 return noneCallback();
             }

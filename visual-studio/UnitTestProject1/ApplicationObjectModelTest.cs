@@ -16,7 +16,6 @@
         public void TestBoolProperty()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             appModel.AddBool(new RealName("my-visible"), new PropertyBool("", true));
 
@@ -33,7 +32,6 @@
         public void TestNumberProperty()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             appModel.AddNumber(new RealName("my-age"), new PropertyNumber("", 39));
 
@@ -50,7 +48,6 @@
         public void TestStringProperty()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             appModel.AddString(new RealName("my-name"), new PropertyString("", "warabemoti"));
 
@@ -67,7 +64,6 @@
         public void TestStringListProperty()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             appModel.AddStringList(new RealName("my-array"), new PropertyStringList("", new List<string>() { "a", "b", "c" }));
 
@@ -88,7 +84,6 @@
         public void TestBoolType()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-visible.type = bool";
@@ -108,7 +103,6 @@
         public void TestNumberType()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-age.type = number";
@@ -128,7 +122,6 @@
         public void TestStringType()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-name.type = string";
@@ -148,7 +141,6 @@
         public void TestStringListType()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-array.type = string-list";
@@ -172,7 +164,6 @@
         public void TestBoolValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-visible.type = bool
@@ -196,7 +187,6 @@ set my-visible.value = true";
         public void TestNumberValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-age.type = number
@@ -220,7 +210,6 @@ set my-age.value = 39";
         public void TestStringValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-name.type = string
@@ -245,7 +234,6 @@ set my-name.value = warabemoti";
         public void TestStringListValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-array.type = string-list
@@ -273,7 +261,6 @@ set my-array.value = ""a"",""b"",""c""";
         public void TestBoolValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-visible.type = bool
@@ -297,7 +284,6 @@ set my-visible = true";
         public void TestNumberValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-age.type = number
@@ -321,7 +307,6 @@ set my-age = 39";
         public void TestStringValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-name.type = string
@@ -346,7 +331,6 @@ set my-name = warabemoti";
         public void TestStringListValue()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-array.type = string-list
@@ -375,7 +359,6 @@ set my-array = ""a"",""b"",""c""";
         public void TestString()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"set my-name.type = string
@@ -399,7 +382,6 @@ set my-name = warabemoti";
         public void PlyTestByCommand2()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var text = @"
 alias top2 = ply
@@ -441,7 +423,6 @@ set top2.value = 2
         public void RealNameTest()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var top2RealName = new RealName("top2");
             Assert.IsFalse(appModel.ContainsKeyOfNumbers(top2RealName));
@@ -482,7 +463,6 @@ set top2.value = 2
         public void PlyTest()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var plyRealName = new RealName("top2");
             Assert.IsFalse(appModel.ContainsKeyOfNumbers(plyRealName));
@@ -510,7 +490,6 @@ set top2.value = 2
         public void InfoTest()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var infoRealName = new RealName("info");
             Assert.IsFalse(appModel.ContainsKeyOfStrings(infoRealName));

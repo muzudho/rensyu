@@ -42,11 +42,7 @@
             this.GetStringList(ApplicationObjectModel.RowNumbersRealName).Value = this.GetStringList(ApplicationObjectModel.RowNumbersRealName).Value;
 
             // モデル変更のログを書き込むやつ☆（＾～＾）
-            {
-                this.ModelChangeLogWriter = new ModelChangeLogWriter("model-change.log");
-                this.ModelChangeLogWriter.WriteLine("> I am a KifuwarabeUEC11Gui!");
-                this.ModelChangeLogWriter.Flush();
-            }
+            this.ModelChangeLogWriter = new ModelChangeLogWriter("model-change.log");
         }
 
         /// <summary>

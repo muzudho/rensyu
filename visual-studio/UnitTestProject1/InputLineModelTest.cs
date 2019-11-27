@@ -12,7 +12,6 @@
         public void TestAliasModel()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var line = @"alias top2 = ply sasite";
 
@@ -46,7 +45,6 @@
         public void TestCommentModel()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var line = @"# This is a comment line.";
 
@@ -78,7 +76,6 @@
         public void TestInfoModel()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var line = "info This is a information.";
 
@@ -110,7 +107,6 @@
         public void TestJsonModel()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var line = @"json {""uso"":800}";
 
@@ -142,7 +138,6 @@
         public void TestPutsModel()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             var text = @"
 # 国際囲碁では I列は無いんだぜ☆（＾～＾）
@@ -185,7 +180,6 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         public void TestSetsModel()
         {
             var appModel = new ApplicationObjectModelWrapper();
-            appModel.ModelChangeLogWriter.Enable = false;
 
             {
                 var text = @"

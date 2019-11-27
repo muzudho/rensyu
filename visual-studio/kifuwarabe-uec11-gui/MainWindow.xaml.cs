@@ -61,6 +61,9 @@
         {
             this.Model = new ApplicationObjectModelWrapper();
 
+            // このアプリケーションの他に、ファイルにアクセスしないなら真で☆（＾～＾）
+            this.Model.ModelChangeLogWriter.Enable = true;
+
             this.VerticalLines = new List<Line>();
             this.HorizontalLines = new List<Line>();
 

@@ -135,7 +135,40 @@
 
                     break;
 
-                case "value":
+                case "visible":
+                    if (propModel == null)
+                    {
+                        Trace.WriteLine($"Warning         | {realName.Value}.visible is fail. {realName.Value} is not found.");
+                    }
+                    else
+                    {
+                        switch (args.Value)
+                        {
+                            case "true":
+                                {
+                                    var oldValue = propModel.Visible;
+                                    var newValue = true;
+                                    appModel.ModelChangeLogWriter.WriteLine($"{args.Name}.{args.Property}", oldValue.ToString(), newValue.ToString());
+                                    propModel.Visible = newValue;
+                                }
+                                break;
+                            case "false":
+                                {
+                                    var oldValue = propModel.Visible;
+                                    var newValue = false;
+                                    appModel.ModelChangeLogWriter.WriteLine($"{args.Name}.{args.Property}", oldValue.ToString(), newValue.ToString());
+                                    propModel.Visible = newValue;
+                                }
+                                break;
+                            default:
+                                Trace.WriteLine($"Warning         | {realName.Value}.visible is fail. {realName.Value} are not implemented.");
+                                break;
+                        }
+                    }
+                    break;
+
+                case "value": // thru
+                default:
                     // モデルに値をセット☆（＾～＾）
                     if (propModel == null)
                     {
@@ -176,37 +209,6 @@
 
                     break;
 
-                case "visible":
-                    if (propModel == null)
-                    {
-                        Trace.WriteLine($"Warning         | {realName.Value}.visible is fail. {realName.Value} is not found.");
-                    }
-                    else
-                    {
-                        switch (args.Value)
-                        {
-                            case "true":
-                                {
-                                    var oldValue = propModel.Visible;
-                                    var newValue = true;
-                                    appModel.ModelChangeLogWriter.WriteLine($"{args.Name}.{args.Property}", oldValue.ToString(), newValue.ToString());
-                                    propModel.Visible = newValue;
-                                }
-                                break;
-                            case "false":
-                                {
-                                    var oldValue = propModel.Visible;
-                                    var newValue = false;
-                                    appModel.ModelChangeLogWriter.WriteLine($"{args.Name}.{args.Property}", oldValue.ToString(), newValue.ToString());
-                                    propModel.Visible = newValue;
-                                }
-                                break;
-                            default:
-                                Trace.WriteLine($"Warning         | {realName.Value}.visible is fail. {realName.Value} are not implemented.");
-                                break;
-                        }
-                    }
-                    break;
             }
         }
     }

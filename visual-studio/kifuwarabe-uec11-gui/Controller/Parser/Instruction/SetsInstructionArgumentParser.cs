@@ -66,29 +66,21 @@
                         leftSide.Text,
                         leftSideStart,
                         (leftOfDot, curr) =>
-                        {
-                            if (leftOfDot == null)
                             {
-                                        // Trace.WriteLine($"Info            | No dot. curr={curr}");
-                                        // ドット無いぜ……☆（＾～＾）じゃあ `.value` があることにして進めるからな☆（＾～＾）
-                                        objectName = leftSide.Text.Trim();
-                                propertyName = "value";
-                            }
-                            else
-                            {
-                                        // Trace.WriteLine($"Info            | Found dot. curr={curr} leftOfDot.Text=[{leftOfDot.Text}] leftSide.Text=[{leftSide.Text}] leftSide.Text.Substring(curr + 1)=[{leftSide.Text.Substring(curr + 1)}]");
-                                        // とりあえず２つだけ見るぜ☆（＾～＾）それ以降は知らん☆（＾～＾）
-                                        objectName = leftOfDot.Text.Trim();
+                                // Trace.WriteLine($"Info            | Found dot. curr={curr} leftOfDot.Text=[{leftOfDot.Text}] leftSide.Text=[{leftSide.Text}] leftSide.Text.Substring(curr + 1)=[{leftSide.Text.Substring(curr + 1)}]");
+                                // とりあえず２つだけ見るぜ☆（＾～＾）それ以降は知らん☆（＾～＾）
+                                objectName = leftOfDot.Text.Trim();
                                 propertyName = leftSide.Text.Substring(curr + 1).Trim();
-                            }
-
-                            return leftSide.Text.Length;
-                        },
-                        () =>
-                        {
-                                    // パースエラー☆（＾～＾）
-                                    return curr;
-                        });
+                                return leftSide.Text.Length;
+                            },
+                            () =>
+                            {
+                                // Trace.WriteLine($"Info            | No dot. curr={curr}");
+                                // ドット無いぜ……☆（＾～＾）じゃあ `.value` があることにして進めるからな☆（＾～＾）
+                                objectName = leftSide.Text.Trim();
+                                propertyName = "value";
+                                return leftSide.Text.Length;
+                            });
                             // Trace.WriteLine($"objectName      | {objectName}");
                             // Trace.WriteLine($"propertyName    | {propertyName}");
 

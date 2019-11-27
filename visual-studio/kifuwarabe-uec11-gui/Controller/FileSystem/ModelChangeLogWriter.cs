@@ -18,7 +18,9 @@
 
         public ModelChangeLogWriter(string file)
         {
+            // 並列処理でロックしてしまうので初期値は false にしろだぜ☆（＾～＾）
             this.Enable = false;
+
             this.File = file;
         }
 
