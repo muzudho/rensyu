@@ -1,15 +1,37 @@
 ﻿namespace UnitTestProject1
 {
     using System;
-    using System.Diagnostics;
     using KifuwarabeUec11Gui.Controller;
-    using KifuwarabeUec11Gui.InputScript;
     using KifuwarabeUec11Gui.Model;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class ApplicationObjectModelTest
     {
+        /// <summary>
+        /// 文字列型プロパティ my-name の追加☆（＾～＾）
+        /// </summary>
+        [TestMethod]
+        public void TestString()
+        {
+            var appModel = new ApplicationObjectModelWrapper();
+            appModel.ModelChangeLogWriter.Enable = false;
+
+            {
+                var text = @"set my-name.type = string
+set my-name = warabemoti";
+                foreach (var line in text.Split(Environment.NewLine))
+                {
+                    InputLineModelController.ParseLine(appModel, line);
+                }
+            }
+
+            Assert.AreEqual(
+                "warabemoti",
+                appModel.GetString(new RealName("warabemoti")).ValueAsText()
+            );
+        }
+
         /// <summary>
         /// 数値型プロパティの ply の追加☆（＾～＾）
         /// </summary>

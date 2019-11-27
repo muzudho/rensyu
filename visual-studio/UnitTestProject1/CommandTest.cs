@@ -1,10 +1,8 @@
 ﻿namespace UnitTestProject1
 {
     using System;
-    using System.Diagnostics;
     using KifuwarabeUec11Gui.Controller;
     using KifuwarabeUec11Gui.Controller.Parser;
-    using KifuwarabeUec11Gui.InputScript;
     using KifuwarabeUec11Gui.Model;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,7 +19,10 @@
             appModel.ModelChangeLogWriter.Enable = false;
 
             {
-                var line = @"set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12"", ""11"", ""10"", ""  9"", ""  8"", ""  7"", ""  6"", ""  5"", ""  4"", ""  3"", ""  2"", ""  1""";
+                var line = @"
+set row-numbers.type = stringLiest
+set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12"", ""11"", ""10"", ""  9"", ""  8"", ""  7"", ""  6"", ""  5"", ""  4"", ""  3"", ""  2"", ""  1""
+";
                 InputLineModelController.ParseLine(appModel, line);
             }
 
