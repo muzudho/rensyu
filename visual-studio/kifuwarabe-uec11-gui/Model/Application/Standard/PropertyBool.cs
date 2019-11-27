@@ -3,8 +3,7 @@
     using System.Globalization;
 
     /// <summary>
-    /// 値テキストがあって、表示・非表示を切り替えられるものは　これだぜ☆（＾～＾）
-    /// 名前プロパティは持つなだぜ☆（＾～＾） JSONの出力書式が　イケてなくなるぜ☆（＾～＾）
+    /// 'true', 'false' （小文字）を持つならこれだぜ☆（＾～＾）
     /// </summary>
     public class PropertyBool : IPropertyValue
     {
@@ -34,7 +33,7 @@
         /// <returns></returns>
         public string ValueAsText()
         {
-            return this.Value.ToString(CultureInfo.CurrentCulture);
+            return this.Value.ToString(CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture);
         }
     }
 }
