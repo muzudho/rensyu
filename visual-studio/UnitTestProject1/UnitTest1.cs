@@ -240,126 +240,15 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.IsNull(matched);
-                    Assert.AreEqual(start, curr);
+                    // 不正解☆（＾～＾）
+                    Assert.Fail();
                     return curr;
                 },
                 () =>
                 {
-                    Assert.Fail();
+                    // 正解☆（＾▽＾）
                     return start;
                 });
-        }
-
-        /// <summary>
-        /// 単語完全一致のテスト☆（＾～＾）
-        /// </summary>
-        [TestMethod]
-        public void TestExactlyKeyword()
-        {
-            // 単語完全一致のテスト☆（＾～＾）
-            var start = 5;
-            StartsWithKeywordParser.Parse(
-                "black",
-                "black",
-                start,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("black", matched?.ToDisplay());
-                    Assert.AreEqual(start, curr);
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-            start = 5;
-            StartsWithKeywordParser.Parse("white", "white", start, (matched, curr) =>
-                {
-                    Assert.AreEqual("white", matched?.ToDisplay());
-                    Assert.AreEqual(start, curr);
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-            start = 5;
-            StartsWithKeywordParser.Parse(
-                "start",
-                "start",
-                start,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("start", matched?.ToDisplay());
-                    Assert.AreEqual(start, curr);
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-            // ホワイトスペースのテスト☆（*＾～＾*）
-            start = 5;
-            WhiteSpaceParser.Parse(
-                "     ",
-                start,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("     ", matched?.ToDisplay());
-                    Assert.AreEqual(start, curr);
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-            // 最初にマッチする単語のテスト☆（＾～＾）
-            WordParser.Parse(
-                "black a19 k10 t1",
-                0,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("black", matched?.ToDisplay());
-                    Assert.AreEqual(5, curr);
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                });
-
-
-            // とりあえずこのテストのスタートは0に揃えておこう☆（＾～＾）
-            start = 0;
-            Assert.AreEqual(12, WordUpToDelimiterParser.Parse(
-                "!",
-                "Hello, world!",
-                start,
-                (matched, curr) =>
-                {
-                    Assert.AreEqual("Hello, world", matched?.ToDisplay());
-                    if (matched == null)
-                    {
-                        return start;
-                    }
-
-                    return curr;
-                },
-                () =>
-                {
-                    Assert.Fail();
-                    return start;
-                }));
         }
 
         /// <summary>

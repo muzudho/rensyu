@@ -351,30 +351,6 @@ set my-array = ""a"",""b"",""c""";
     [TestClass]
     public class ApplicationObjectModelTest
     {
-
-        /// <summary>
-        /// 文字列型プロパティ my-name の追加☆（＾～＾）
-        /// </summary>
-        [TestMethod]
-        public void TestString()
-        {
-            var appModel = new ApplicationObjectModelWrapper();
-
-            {
-                var text = @"set my-name.type = string
-set my-name = warabemoti";
-                foreach (var line in text.Split(Environment.NewLine))
-                {
-                    InputLineModelController.ParseLine(appModel, line);
-                }
-            }
-
-            Assert.AreEqual(
-                "warabemoti",
-                appModel.GetString(new RealName("warabemoti")).ValueAsText()
-            );
-        }
-
         /// <summary>
         /// 数値型プロパティの ply の追加☆（＾～＾）
         /// </summary>
@@ -491,12 +467,14 @@ set top2.value = 2
         {
             var appModel = new ApplicationObjectModelWrapper();
 
+            // info は初期実装☆（＾～＾）
             var infoRealName = new RealName("info");
-            Assert.IsFalse(appModel.ContainsKeyOfStrings(infoRealName));
+            Assert.IsTrue(appModel.ContainsKeyOfStrings(infoRealName));
 
             appModel.AddProperty(infoRealName, new PropertyString("#info", "Hello, world!"));
             Assert.IsTrue(appModel.ContainsKeyOfStrings(infoRealName));
 
+            // 消してもいいけど困るだけだぜ☆（＾～＾）
             appModel.RemoveProperty(
                 infoRealName,
                 (value) =>

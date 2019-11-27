@@ -175,7 +175,40 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         [TestMethod]
         public void TestInfoInstructionArgumentParser()
         {
-            Assert.Fail();
+            var appModel = new ApplicationObjectModelWrapper();
+
+            // 'info' は初期実装☆（＾～＾）
+            var infoRealName = new RealName("info");
+            Assert.IsTrue(appModel.ContainsKeyOfStrings(infoRealName));
+
+            {
+                var text = @"info バナナ食うか☆（＾～＾）？";
+
+                foreach (var line in text.Split(Environment.NewLine))
+                {
+                    InputLineModelController.ParseLine(appModel, line);
+                }
+            }
+
+            Assert.IsTrue(appModel.ContainsKeyOfStrings(infoRealName));
+
+            Assert.AreEqual(
+                "バナナ食うか☆（＾～＾）？",
+                appModel.GetString(infoRealName).Value
+                );
+
+            // 消してもいいけど困るだけだぜ☆（＾～＾）
+            appModel.RemoveProperty(
+                infoRealName,
+                (value) =>
+                {
+                    Assert.IsTrue(value is PropertyString);
+                    Assert.AreEqual("", value.Title);
+                    Assert.AreEqual("バナナ食うか☆（＾～＾）？", value.ValueAsText());
+                },
+                () =>
+                {
+                });
         }
 
         [TestMethod]
@@ -262,7 +295,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
     public class ParserToken
     {
         /// <summary>
-        /// aliasコマンドの引数をテスト☆（＾～＾）
+        /// 単語完全一致のテスト☆（＾～＾）
         /// </summary>
         [TestMethod]
         public void TestStartsWithKeywordParser()
@@ -274,7 +307,25 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 start,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("banana", matched?.ToDisplay());
+                    Assert.AreEqual("banana", matched.ToDisplay());
+                    Assert.AreEqual(6, curr);
+                    return curr;
+                },
+                () =>
+                {
+                    Assert.Fail();
+                    return start;
+                });
+
+            // ホワイトスペースのテスト☆（*＾～＾*）
+            start = 0;
+            WhiteSpaceParser.Parse(
+                "     ",
+                start,
+                (matched, curr) =>
+                {
+                    Assert.AreEqual("     ", matched.ToDisplay());
+                    Assert.AreEqual(5, curr);
                     return curr;
                 },
                 () =>
@@ -345,7 +396,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 start,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("apple", matched?.ToDisplay());
+                    Assert.AreEqual("apple", matched.ToDisplay());
                     return curr;
                 },
                 () =>
@@ -384,7 +435,36 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
         [TestMethod]
         public void TestCellAddressParser()
         {
-            Assert.Fail();
+            var appModel = new ApplicationObjectModelWrapper();
+
+            {
+                var text = @"
+# 国際囲碁では I列は無いんだぜ☆（＾～＾）
+set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J"", ""K"", ""L"", ""M"", ""N"", ""O"", ""P"", ""Q"", ""R"", ""S"", ""T""
+set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12"", ""11"", ""10"", ""  9"", ""  8"", ""  7"", ""  6"", ""  5"", ""  4"", ""  3"", ""  2"", ""  1""
+";
+
+                foreach (var line in text.Split(Environment.NewLine))
+                {
+                    InputLineModelController.ParseLine(appModel, line);
+                }
+            }
+
+            var start = 0;
+            CellAddressParser.Parse(
+                "K10",
+                start,
+                appModel,
+                (CellAddress matched, int curr) =>
+                {
+                    Assert.AreEqual(9, matched.ColumnAddress.NumberO0);
+                    Assert.AreEqual(9, matched.RowAddress.NumberO0);
+                    return curr;
+                },
+                () =>
+                {
+                    return start;
+                });
         }
 
         [TestMethod]
@@ -405,20 +485,15 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 }
             }
 
-            var start = 5;
+            var start = 0;
             CellRangeParser.Parse(
                 "C7:E9",
                 start,
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("C7:E9", matched?.ToDisplay(appModel));
-                    if (matched == null)
-                    {
-                        return start;
-                    }
-
-                    Assert.AreEqual(start, curr);
+                    Assert.AreEqual("C7:E9", matched.ToDisplay(appModel));
+                    Assert.AreEqual(5, curr);
                     return curr;
                 },
                 () =>
@@ -427,20 +502,15 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                     return start;
                 });
 
-            start = 5;
+            start = 0;
             CellRangeParser.Parse(
                 "E9:C7",
                 start,
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("E9:C7", matched?.ToDisplay(appModel));
-                    if (matched == null)
-                    {
-                        return start;
-                    }
-
-                    Assert.AreEqual(start, curr);
+                    Assert.AreEqual("E9:C7", matched.ToDisplay(appModel));
+                    Assert.AreEqual(5, curr);
                     return curr;
                 },
                 () =>
@@ -450,20 +520,15 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 });
 
             // 短縮表記☆（＾～＾）
-            start = 5;
+            start = 0;
             CellRangeParser.Parse(
                 "F5:F5",
                 start,
                 appModel,
                 (matched, curr) =>
                 {
-                    Assert.AreEqual("F5", matched?.ToDisplay(appModel));
-                    if (matched == null)
-                    {
-                        return start;
-                    }
-
-                    Assert.AreEqual(start, curr);
+                    Assert.AreEqual("F5", matched.ToDisplay(appModel));
+                    Assert.AreEqual(5, curr);
                     return curr;
                 },
                 () =>
@@ -497,13 +562,12 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
 |"19"|  0|T|18|
              */
 
-            // とりあえずこのテストのスタートは0に揃えておこう☆（＾～＾）
-            start = 0;
             {
                 var indexes = new List<int>();
 
                 // I列は無いことに注意☆（＾～＾）！
                 // 右肩上がり☆（＾～＾）
+                start = 0;
                 CellRangeParser.Parse(
                     "H7:K9",
                     start,
@@ -537,6 +601,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 var indexes = new List<int>();
 
                 // I列は無いことに注意☆（＾～＾）！
+                start = 0;
                 CellRangeParser.Parse(
                     "K9:H7",
                     start,
@@ -571,6 +636,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 var signs = new List<string>();
 
                 // I列は無いことに注意☆（＾～＾）！
+                start = 0;
                 CellRangeParser.Parse(
                     "H7:K9",
                     start,
@@ -603,6 +669,7 @@ set row-numbers = ""19"", ""18"", ""17"", ""16"", ""15"", ""14"", ""13"", ""12""
                 var signs = new List<string>();
 
                 // I列は無いことに注意☆（＾～＾）！
+                start = 0;
                 CellRangeParser.Parse(
                     "K9:H7",
                     start,
@@ -650,15 +717,17 @@ set column-numbers = ""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J
             }
 
             Assert.AreEqual(
-                @"""A"", ""B"", ""C"", ""D"", ""E"", ""F"", ""G"", ""H"", ""J"", ""K"", ""L"", ""M"", ""N"", ""O"", ""P"", ""Q"", ""R"", ""S"", ""T""",
+                @"""A"",""B"",""C"",""D"",""E"",""F"",""G"",""H"",""J"",""K"",""L"",""M"",""N"",""O"",""P"",""Q"",""R"",""S"",""T""",
                 appModel.GetStringList(ApplicationObjectModel.ColumnNumbersRealName).ValueAsText());
         }
 
+        /* TODO でかくて大変☆（＾～＾）
         [TestMethod]
         public void TestInputLineParser()
         {
             Assert.Fail();
         }
+        */
 
         /// <summary>
         /// 国際式囲碁の行番号をテスト☆（＾～＾）
